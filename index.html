@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ตารางเรียน</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f4f2ee;--fg:#18181b;--mute:rgba(24,24,27,.55);--line:rgba(24,24,27,.12);--card:rgba(255,255,255,.6);--dot:.13;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1013;--fg:#f5f5f7;--mute:rgba(245,245,247,.58);--line:rgba(255,255,255,.14);--card:rgba(255,255,255,.05)}}
+:root[data-theme="dark"]{--bg:#0f1013;--fg:#f5f5f7;--mute:rgba(245,245,247,.58);--line:rgba(255,255,255,.14);--card:rgba(255,255,255,.05)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Noto Sans Thai",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+.dots{position:fixed;inset:0;pointer-events:none;opacity:var(--dot);background-image:radial-gradient(var(--fg) 1.1px,transparent 1.4px);background-size:22px 22px}
+main{position:relative;max-width:1180px;margin:0 auto;padding:56px 24px 64px}
+h1{margin:0;font-size:clamp(30px,5vw,44px);font-weight:600;letter-spacing:-.01em}
+.sub{margin:8px 0 0;color:var(--mute);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));justify-items:center;align-items:end;gap:20px 40px;margin-top:40px}
+.hint{margin:36px 0 0;text-align:center;font:11px ui-monospace,Menlo,monospace;letter-spacing:.16em;color:var(--mute);text-transform:uppercase}
+h2{margin:56px 0 14px;font-size:20px;font-weight:600}
+.wrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+table{width:100%;border-collapse:collapse;min-width:680px;font-size:14px}
+th,td{padding:13px 16px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+td.nm{white-space:normal;min-width:240px}
+th{font-weight:500;color:var(--mute);font-size:12px;letter-spacing:.04em}
+tr:last-child td{border-bottom:0}
+td.c{font-family:ui-monospace,Menlo,monospace;font-size:13px}
+
+/* ---- glass folder (ported from the 21st.dev component) ---- */
+.gf-root{--px:0;--ease:cubic-bezier(.2,.8,.2,1);--spring:cubic-bezier(.34,1.36,.5,1);--hinge:0deg;--lift:42px;--spread:0px;--fan:0deg;--stack:15px;--ink:#141416;--ink2:rgba(20,20,22,.55);position:relative;width:340px;height:326px;isolation:isolate;animation:rise .8s var(--ease) both;animation-delay:calc(var(--i)*90ms)}
+.gf-root[data-tone="dark"]{--ink:#f5f5f7;--ink2:rgba(245,245,247,.58)}
+@keyframes rise{from{opacity:0;translate:0 24px}to{opacity:1;translate:0 0}}
+.gf-root:hover,.gf-root:focus-within{--hinge:-11deg;--lift:-34px;--spread:8px;--fan:1.4deg;--stack:10px}
+.gf-root[data-open]{--hinge:-24deg;--lift:-96px;--spread:40px;--fan:5deg;--stack:30px}
+.gf-stage{position:absolute;left:0;top:54px;width:340px;height:272px}
+.gf-shadow{position:absolute;left:18px;right:18px;bottom:-6px;height:60px;border-radius:40px;background:rgba(16,18,24,.34);filter:blur(22px)}
+.gf-root[data-tone="dark"] .gf-shadow{background:rgba(0,0,0,.62)}
+.gf-back{position:absolute;inset:0;overflow:hidden}
+.gf-sheen{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,0) 22%)}
+.gf-files{position:absolute;inset:0;z-index:5;pointer-events:none;clip-path:inset(-400px -400px 10px -400px)}
+.gf-sheet{position:absolute;left:34px;top:96px;width:272px;height:184px;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#fff,#f2f2f0);color:#18181b;box-shadow:inset 0 1px 0 #fff,0 0 0 .5px rgba(0,0,0,.1),0 10px 26px -8px rgba(10,12,20,.28);transform-origin:50% 100%;
+transform:translate(calc(var(--jx) + var(--slot)*var(--spread)),calc(var(--lift) - var(--depth)*var(--stack)))rotate(calc(var(--jr) + var(--slot)*var(--fan)));transition:transform .75s var(--spring) calc(var(--depth)*40ms)}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:11px 14px 0;white-space:nowrap}
+.sh b{font:600 12.5px ui-monospace,Menlo,monospace;letter-spacing:.02em}
+.sh span{font:10.5px ui-monospace,Menlo,monospace;color:rgba(24,24,27,.55)}
+.sb{margin:12px 14px 0}
+.sb p{margin:0}
+.sb .n{font-size:13.5px;font-weight:500;line-height:1.35}
+.sb .r{margin-top:6px;font-size:12px;color:rgba(24,24,27,.6)}
+.gf-front{position:absolute;left:0;top:74px;width:340px;height:198px;z-index:10;-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);transform-origin:50% 100%;transform:perspective(760px) rotateX(var(--hinge));transition:transform .8s var(--spring)}
+.gf-tint{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.5) 42%,rgba(252,252,252,.93))}
+.gf-root[data-tone="dark"] .gf-tint{background:linear-gradient(180deg,rgba(18,18,20,.18),rgba(14,14,16,.62) 46%,rgba(8,8,10,.94))}
+.gf-rim{position:absolute;left:0;top:0;width:340px;height:198px;overflow:visible;pointer-events:none;fill:none}
+.gf-rim path{stroke-width:2.4}
+.gf-hit{all:unset;position:absolute;inset:0;z-index:1;cursor:pointer}
+.gf-front:has(.gf-hit:focus-visible) .gf-rim path{stroke-width:5}
+.gf-label{position:absolute;left:28px;bottom:30px;z-index:2;display:flex;flex-direction:column;gap:4px;pointer-events:none;color:var(--ink)}
+.gf-title{font-size:20px;font-weight:500;line-height:1.2}
+.gf-meta{font:12px ui-monospace,Menlo,monospace;letter-spacing:.03em;color:var(--ink2)}
+.gf-today{position:absolute;right:24px;bottom:34px;z-index:2;padding:4px 11px;border-radius:99px;font-size:12px;font-weight:500;background:var(--ink);color:var(--bg);pointer-events:none}
+@media (prefers-reduced-motion:reduce){.gf-root,.gf-root *{transition-duration:0s!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="dots" aria-hidden="true"></div>
+<main>
+  <h1>ตารางเรียน</h1>
+  <p class="sub">7 รายวิชา · จันทร์–ศุกร์ · วางเมาส์เพื่อเปิดแฟ้ม คลิกเพื่อดูรายวิชาของแต่ละวัน</p>
+  <div class="grid" id="grid"></div>
+  <p class="hint">Hover to lean · Click to open</p>
+  <h2>รายวิชาทั้งหมด</h2>
+  <div class="wrap"><table>
+    <thead><tr><th>รหัสวิชา</th><th>ชื่อวิชา</th><th>วัน</th><th>เวลา</th><th>สถานที่</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+</main>
+<script>
+var DAYS=["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์"];
+var ART=[
+ "radial-gradient(90% 90% at 20% 20%,#f4a8a0,transparent 60%),radial-gradient(80% 80% at 90% 90%,#c2433f,transparent 60%),#2a1e2a",
+ "radial-gradient(90% 90% at 80% 10%,#7fd0c4,transparent 60%),radial-gradient(80% 80% at 10% 90%,#16505a,transparent 65%),#07090c",
+ "radial-gradient(90% 90% at 15% 15%,#f6d98a,transparent 60%),radial-gradient(80% 80% at 90% 90%,#b3702f,transparent 62%),#2b1a24",
+ "radial-gradient(90% 90% at 85% 15%,#c9a6dc,transparent 60%),radial-gradient(80% 80% at 10% 90%,#3e2850,transparent 65%),#120c18",
+ "radial-gradient(90% 90% at 15% 20%,#a9c7ee,transparent 60%),radial-gradient(80% 80% at 90% 90%,#22395e,transparent 62%),#e5edf4"
+];
+var C=[
+ {d:1,c:"SU002002",n:"ภาษาอังกฤษ",t:"08.30–09.20",r:""},
+ {d:1,c:"SU001001",n:"ความเป็นผู้ประกอบการที่ขับเคลื่อนด้วยนวัตกรรม",t:"13.00–15.40",r:""},
+ {d:2,c:"800103",n:"ประวัติศาสตร์ศิลปะและสุนทรียศาสตร์ของศิลปะและการออกแบบ",t:"09.25–12.05",r:"ตึก ร.2111"},
+ {d:2,c:"802117",n:"เทคนิคคอมพิวเตอร์กราฟิกประยุกต์สำหรับสื่อดิจิทัล",t:"13.55–17.30",r:"Lab ICT4"},
+ {d:3,c:"SU002002",n:"ภาษาอังกฤษ",t:"08.30–12.05",r:""},
+ {d:4,c:"802114",n:"หลักการออกแบบ",t:"13.55–17.30",r:"ตึก ร.2214"},
+ {d:5,c:"802115",n:"หลักการและทฤษฎีสี",t:"09.25–13.00",r:"ห้องบรรยาย ยย.2"},
+ {d:5,c:"800102",n:"การโปรแกรมคอมพิวเตอร์สำหรับเทคโนโลยีดิจิทัล 2",t:"13.55–17.30",r:"Lab Mac"}
+];
+var W=340,H=272,FH=198;
+var BACK="M0 56A22 22 0 0 1 22 34L146 34C170 34 172 0 198 0L318 0A22 22 0 0 1 340 22L340 250A22 22 0 0 1 318 272L22 272A22 22 0 0 1 0 250Z";
+var FRONT="M0 22A22 22 0 0 1 22 0L118 0C144 0 146 32 172 32L318 32A22 22 0 0 1 340 54L340 "+(FH-22)+"A22 22 0 0 1 318 "+FH+"L22 "+FH+"A22 22 0 0 1 0 "+(FH-22)+"Z";
+var today=new Date().getDay(), roots=[];
+function jit(s){var x=Math.sin(s*9.7+1.3)*10000;return x-Math.floor(x)}
+
+var grid=document.getElementById("grid");
+for(var d=1;d<=5;d++){
+  var list=C.filter(function(x){return x.d===d});
+  var sheets=list.map(function(f,v){
+    var slot=list.length<=1?0:(v/(list.length-1))*2-1;
+    return '<div class="gf-sheet" style="--slot:'+slot+';--depth:'+(list.length-1-v)+';--jx:'+((jit(d*7+v)-.5)*10).toFixed(1)+'px;--jr:'+((jit(d*3+v+9)-.5)*3.2).toFixed(1)+'deg;z-index:'+(v+1)+'">'
+      +'<div class="sh"><b>'+f.c+'</b><span>'+f.t+' น.</span></div>'
+      +'<div class="sb"><p class="n">'+f.n+'</p>'+(f.r?'<p class="r">'+f.r+'</p>':'')+'</div></div>';
+  }).join("");
+  var el=document.createElement("div");
+  el.className="gf-root";
+  el.style.setProperty("--i",d-1);
+  el.innerHTML='<div class="gf-stage"><div class="gf-shadow"></div>'
+   +'<div class="gf-back" style="clip-path:path(\''+BACK+'\');background:'+ART[d-1]+'"><div class="gf-sheen"></div></div>'
+   +'<div class="gf-files">'+sheets+'</div>'
+   +'<div class="gf-front" style="clip-path:path(\''+FRONT+'\')"><div class="gf-tint"></div>'
+   +'<svg class="gf-rim" viewBox="0 0 '+W+' '+FH+'" aria-hidden="true"><defs><linearGradient id="r'+d+'" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".35" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity=".12"/></linearGradient></defs><path d="'+FRONT+'" stroke="url(#r'+d+')"/></svg>'
+   +'<button type="button" class="gf-hit" aria-expanded="false" aria-label="วัน'+DAYS[d]+' '+list.length+' วิชา"></button>'
+   +'<div class="gf-label"><span class="gf-title">วัน'+DAYS[d]+'</span><span class="gf-meta">'+list.length+' วิชา</span></div>'
+   +(d===today?'<span class="gf-today">วันนี้</span>':'')+'</div></div>';
+  var hit=el.querySelector(".gf-hit");
+  hit.addEventListener("click",function(e){
+    var r=e.currentTarget.closest(".gf-root"), o=!r.hasAttribute("data-open");
+    r.toggleAttribute("data-open",o);
+    e.currentTarget.setAttribute("aria-expanded",o);
+  });
+  grid.appendChild(el); roots.push(el);
+}
+document.addEventListener("pointerdown",function(e){
+  roots.forEach(function(r){if(!r.contains(e.target)){r.removeAttribute("data-open");r.querySelector(".gf-hit").setAttribute("aria-expanded","false")}});
+});
+document.addEventListener("keydown",function(e){
+  if(e.key==="Escape")roots.forEach(function(r){r.removeAttribute("data-open")});
+});
+var mq=window.matchMedia("(prefers-color-scheme: dark)");
+function tone(){roots.forEach(function(r){r.dataset.tone=mq.matches?"dark":"light"})}
+tone(); if(mq.addEventListener)mq.addEventListener("change",tone);
+
+document.getElementById("rows").innerHTML=C.map(function(f){
+  return '<tr><td class="c">'+f.c+'</td><td class="nm">'+f.n+'</td><td>'+DAYS[f.d]+'</td><td>'+f.t+' น.</td><td>'+f.r+'</td></tr>';
+}).join("");
+</script>
+</body>
+</html>
